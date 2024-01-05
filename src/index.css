@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Dentro del bloque de estilos para Chat.js */
+.chat-container .message-container .message .username {
+  color: #4caf50; /* Cambia el color del nombre de usuario según tus preferencias */
+  font-weight: bold;
+  margin-right: 5px; /* Espacio entre el nombre de usuario y el mensaje */
+}
