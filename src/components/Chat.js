@@ -4,44 +4,36 @@ import { useLocation, Link } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import RoomList from './RoomList';
+import { useUser } from '../UserContext';
 
 const Chat = () => {
   const location = useLocation();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [rooms, setRooms] = useState([]);
   const [room, setRoom] = useState('');
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useUser();
 
   const firestore = firebase.firestore();
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const roomParam = queryParams.get('room');
-    const userId = 'Anónimo';
+    const userParam = queryParams.get('user') || user;
 
     setRoom(roomParam);
-    setUser(userId);
+    setUser(userParam);
 
     const roomRef = firestore.collection('rooms').doc(roomParam);
 
-    const unsubscribeMessages = roomRef.onSnapshot((snapshot) => {
+    const unsubscribe = roomRef.onSnapshot((snapshot) => {
       if (snapshot.exists) {
         const data = snapshot.data();
         setMessages(data.messages || []);
       }
     });
 
-    const unsubscribeRooms = firestore.collection('rooms').onSnapshot((snapshot) => {
-      const allRooms = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setRooms(allRooms);
-    });
-
-    return () => {
-      unsubscribeMessages();
-      unsubscribeRooms();
-    };
-  }, [location.search, firestore]);
+    return () => unsubscribe();
+  }, [location.search, firestore, user, setUser]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {
@@ -55,35 +47,51 @@ const Chat = () => {
     }
   };
 
-  const handleCreateRoom = async () => {
-    const newRoomName = prompt('Introduce el nombre de la nueva sala:');
+  const handleChangeUsername = () => {
+    const newUsername = prompt('Ingresa tu nuevo nombre de usuario:');
+    if (newUsername) {
+      setUser(newUsername);
+      // Actualiza la URL con el nuevo nombre de usuario
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set('user', newUsername);
+      window.history.replaceState({}, '', `${location.pathname}?${searchParams}`);
+    }
+  };
+
+  const handleCreateRoom = () => {
+    const newRoomName = prompt('Ingresa el nombre de la nueva sala:');
     if (newRoomName) {
-      await firestore.collection('rooms').doc(newRoomName).set({
-        messages: [],
-      });
+      // Crea la nueva sala en Firestore
+      const newRoomRef = firestore.collection('rooms').doc(newRoomName);
+      newRoomRef.set({ messages: [] });
+
+      // Redirige a la nueva sala con el nombre de usuario actual
+      window.location.href = `/chat?room=${newRoomName}&user=${user}`;
     }
   };
 
   return (
     <div className="chat-container">
       <div className="header">
-        <h1>Bienvenido a la sala de chat {room && `(${room})`}</h1>
+        <h1>
+          Bienvenido a la sala de chat {room && `(${room})`} - Usuario: {user}{' '}
+          <button onClick={handleChangeUsername}>Cambiar Usuario</button>
+        </h1>
         <div>
           <Link to="/chat?room=sala1">Sala 1</Link>
           <span> | </span>
           <Link to="/chat?room=sala2">Sala 2</Link>
         </div>
       </div>
-      <div className="room-list-container">
-        <RoomList rooms={rooms} />
-        <button onClick={handleCreateRoom}>Crear Nueva Sala</button>
-      </div>
-      <div className="message-container">
-        {messages.map((message, index) => (
-          <div key={index} className="message">
-            {`${message.user || 'Anónimo'}: ${message.message}`}
-          </div>
-        ))}
+      <div className="chat-content">
+        <RoomList />
+        <div className="message-container">
+          {messages.map((message, index) => (
+            <div key={index} className="message">
+              {`${message.user || 'Anónimo'}: ${message.message}`}
+            </div>
+          ))}
+        </div>
       </div>
       <div className="input-container">
         <input
@@ -94,9 +102,10 @@ const Chat = () => {
         />
         <button onClick={handleSendMessage}>Enviar</button>
       </div>
+      <button onClick={handleCreateRoom}>Crear Nueva Sala</button>
     </div>
   );
-}
+};
 
 export default Chat;
 

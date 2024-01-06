@@ -6,6 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+import { UserProvider } from './UserContext';
 
 // Configura tu proyecto de Firebase
 const firebaseConfig = {
@@ -22,7 +23,9 @@ firebase.initializeApp(firebaseConfig);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <UserProvider>
+      <App />
+    </UserProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

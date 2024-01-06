@@ -45,95 +45,33 @@
   background-color: #45a049;
 }
 
-
 /* Estilos específicos para el componente Chat.js */
 .chat-container {
   background-color: #282c34;
   color: white;
-  flex: 1;
-  width: 100%; /* Añadido para asegurar el ancho completo */
-  overflow-y: hidden; /* Para ocultar la barra de desplazamiento vertical si no es necesaria */
-}
-
-.chat-container .header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 80vh; /* Ajusta la altura según tus preferencias */
+}
+
+.chat-container .header {
   margin-bottom: 20px;
 }
 
-.chat-container .header h1 {
-  margin: 0;
-  font-size: 24px;
-  color: white;
-}
-
-.chat-container .header p {
-  margin: 0;
-  font-size: 14px;
-  color: #888;
-  text-align: center;
-  margin-top: 5px;
-}
-
-.chat-container .header div {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 400px;
-  margin-top: 10px;
-}
-
-.chat-container .header div a {
-  color: #4caf50;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.chat-container .header div a:hover {
-  text-decoration: underline;
-}
-
-.chat-container .message-container {
-  flex: 1;
-  overflow-y: auto;
-  margin-bottom: 20px;
-  border: 1px solid #000000;
-  padding: 10px;
-  background-color: #5b5b5b;
-  width: 50%;
-  height: 60%; /* Añadido para asegurar el ancho completo */
-}
-
-.chat-container .message {
-  margin-bottom: 10px;
-}
-
-.chat-container .input-container {
+.chat-content {
   display: flex;
   width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  justify-content: space-between;
-  align-items: center;
+  max-width: 800px;
 }
 
-.chat-container .input-container input {
-  flex: 1;
-}
-
-.chat-container .input-container button {
-  margin-left: 10px;
-}
-
-/* Añade esto a tu archivo App.css o Chat.css */
 .room-list-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin-right: 20px;
 }
-
 
 .room-list {
   background-color: #333;
@@ -156,7 +94,67 @@
   margin-bottom: 5px;
 }
 
+.room-list button {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
+.room-list button:hover {
+  background-color: #45a049;
+}
+
+.message-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  border: 1px solid #000000;
+  padding: 10px;
+  background-color: #5b5b5b;
+  width: 50%;
+  height: 88%; /* Ajusta la altura del cuadro de mensajes según tus preferencias */
+}
+
+.input-container {
+  display: flex;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  justify-content: space-between;
+  align-items: center;
+}
+/* Añade esto a tu archivo App.css o Chat.css */
+.room-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 20px;
+}
+
+.room-list {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.room-list h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.room-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.room-list li {
+  margin-bottom: 5px;
+}
 
 .room-list button {
   margin-top: 10px;
@@ -172,7 +170,20 @@
   background-color: #45a049;
 }
 
+/* Agrega este estilo para el botón de crear sala */
+.create-room-button {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
+.create-room-button:hover {
+  background-color: #2980b9;
+}
 
 
 
