@@ -14,7 +14,7 @@
 
 .join-container h1,
 .chat-container h1 {
-  color: #333;
+  color: #ffffff;
 }
 
 .join-container div,
@@ -33,7 +33,7 @@
 .join-container button,
 .chat-container button {
   padding: 10px;
-  background-color: #4caf50;
+  background-color: #3c0081;
   color: white;
   border: none;
   cursor: pointer;
@@ -42,7 +42,7 @@
 
 .join-container button:hover,
 .chat-container button:hover {
-  background-color: #45a049;
+  background-color: #000000;
 }
 
 /* Estilos específicos para el componente Chat.js */
@@ -71,6 +71,8 @@
   flex-direction: column;
   align-items: flex-start;
   margin-right: 20px;
+  max-height: 300px; /* Establece la altura máxima deseada */
+  overflow-y: auto; /* Agrega scroll vertical si es necesario */
 }
 
 .room-list {
@@ -94,10 +96,20 @@
   margin-bottom: 5px;
 }
 
+.room-list li a {
+  color: #a200ff; /* Color deseado para los nombres de las salas */
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.room-list li a:hover {
+  color: #cbb5f3; /* Color al pasar el mouse sobre los nombres de las salas */
+}
+
 .room-list button {
   margin-top: 10px;
   padding: 8px;
-  background-color: #4caf50;
+  background-color: #4fcaca;
   color: white;
   border: none;
   cursor: pointer;
@@ -105,7 +117,7 @@
 }
 
 .room-list button:hover {
-  background-color: #45a049;
+  background-color: #51bbc9;
 }
 
 .message-container {
@@ -145,6 +157,8 @@
 .room-list h2 {
   margin: 0;
   font-size: 18px;
+  color: #ffffff; /* Color más atractivo para el nombre de la sala */
+  text-transform: uppercase; /* Convierte el texto a mayúsculas */
 }
 
 .room-list ul {
@@ -159,7 +173,7 @@
 .room-list button {
   margin-top: 10px;
   padding: 8px;
-  background-color: #4caf50;
+  background-color: #49bcc0;
   color: white;
   border: none;
   cursor: pointer;
@@ -185,5 +199,69 @@
   background-color: #2980b9;
 }
 
+.input-container {
+  display: flex;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #422c50; /* Color de fondo del cuadro de entrada */
+  padding: 10px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+}
 
+.input-container input {
+  flex: 1; /* El campo de entrada ocupa todo el espacio disponible */
+  padding: 8px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 3px;
+}
 
+.input-container button {
+  padding: 8px;
+  background-color: #3c0081;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.input-container button:hover {
+  background-color: #000000;
+}
+
+.message-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  border: 1px solid #000000;
+  padding: 10px;
+  background-color: #5b5b5b;
+  width: 50%;
+  height: 88%;
+  border-radius: 5px; /* Bordes redondeados */
+}
+
+.message {
+  background-color: #343536; /* Fondo de cada mensaje */
+  color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px; /* Bordes redondeados */
+}
+
+.message button {
+  padding: 8px;
+  background-color: #340649;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 10px;
+}
+
+.message button:hover {
+  background-color: #000000;
+}

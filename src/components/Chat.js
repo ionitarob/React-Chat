@@ -1,16 +1,18 @@
-// src/components/Chat.js
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import RoomList from './RoomList';
 import { useUser } from '../UserContext';
+import '../App.css'; // Asegúrate de importar el archivo CSS correspondiente
 
 const Chat = () => {
   const location = useLocation();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [room, setRoom] = useState('');
+  const [quoteMessage, setQuoteMessage] = useState(null);
+  const [showQuoteMenu, setShowQuoteMenu] = useState(false); // Nuevo estado para controlar la visibilidad del menú de citas
   const { user, setUser } = useUser();
 
   const firestore = firebase.firestore();
@@ -38,32 +40,39 @@ const Chat = () => {
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {
       const roomRef = firestore.collection('rooms').doc(room);
-  
-      // Obtén el timestamp actual del servidor
       const serverTimestamp = firebase.firestore.Timestamp.now();
-  
-      // Crea el objeto del mensaje con el timestamp
       const newMessageObj = {
         message: newMessage,
         user,
         timestamp: serverTimestamp,
       };
-  
-      // Agrega el mensaje al array usando arrayUnion
+
+      if (quoteMessage) {
+        newMessageObj.quote = quoteMessage;
+        setQuoteMessage(null);
+      }
+
       await roomRef.update({
         messages: firebase.firestore.FieldValue.arrayUnion(newMessageObj),
       });
-  
+
       setNewMessage('');
     }
   };
-  
+
+  const handleQuoteReply = (message) => {
+    setQuoteMessage(message);
+    setShowQuoteMenu(false); // Oculta el menú después de seleccionar una cita
+  };
+
+  const toggleQuoteMenu = () => {
+    setShowQuoteMenu(!showQuoteMenu);
+  };
 
   const handleChangeUsername = () => {
     const newUsername = prompt('Ingresa tu nuevo nombre de usuario:');
     if (newUsername) {
       setUser(newUsername);
-      // Actualiza la URL con el nuevo nombre de usuario
       const searchParams = new URLSearchParams(location.search);
       searchParams.set('user', newUsername);
       window.history.replaceState({}, '', `${location.pathname}?${searchParams}`);
@@ -73,11 +82,8 @@ const Chat = () => {
   const handleCreateRoom = () => {
     const newRoomName = prompt('Ingresa el nombre de la nueva sala:');
     if (newRoomName) {
-      // Crea la nueva sala en Firestore
       const newRoomRef = firestore.collection('rooms').doc(newRoomName);
       newRoomRef.set({ messages: [] });
-
-      // Redirige a la nueva sala con el nombre de usuario actual
       window.location.href = `/chat?room=${newRoomName}&user=${user}`;
     }
   };
@@ -87,39 +93,52 @@ const Chat = () => {
       <div className="header">
         <h1>
           Bienvenido a la sala de chat {room && `(${room})`} - Usuario: {user}{' '}
-          <button onClick={handleChangeUsername}>Cambiar Usuario</button>
+          <button className="change-username" onClick={handleChangeUsername}>
+            Cambiar Usuario
+          </button>
         </h1>
-        <div>
-          <Link to="/chat?room=sala1">Sala 1</Link>
-          <span> | </span>
-          <Link to="/chat?room=sala2">Sala 2</Link>
-        </div>
       </div>
       <div className="chat-content">
         <RoomList />
         <div className="message-container">
           {messages.map((message, index) => (
             <div key={index} className="message">
-              {`${message.user || 'Anónimo'} (${new Date(message.timestamp?.seconds * 1000).toLocaleTimeString()}): ${message.message}`}
+              <div className="message-content">
+                {`${message.user || 'Anónimo'} (${new Date(message.timestamp?.seconds * 1000).toLocaleTimeString()}): ${message.message}`}
+              </div>
+              <div className="message-actions" onClick={toggleQuoteMenu}>
+                ...
+                {showQuoteMenu && (
+                  <div className="quote-menu" onClick={() => handleQuoteReply(message)}>
+                    Quote & Reply
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
       </div>
       <div className="input-container">
         <input
+          className="message-input"
           type="text"
           placeholder="Escribe un mensaje..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
-        <button onClick={handleSendMessage}>Enviar</button>
+        <button className="send-button" onClick={handleSendMessage}>
+          Enviar
+        </button>
       </div>
-      <button onClick={handleCreateRoom}>Crear Nueva Sala</button>
+      <button className="create-room-button" onClick={handleCreateRoom}>
+        Crear Nueva Sala
+      </button>
     </div>
   );
 };
 
 export default Chat;
+
 
 
 
