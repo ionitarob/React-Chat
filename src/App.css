@@ -45,6 +45,7 @@
   background-color: #45a049;
 }
 
+
 /* Estilos específicos para el componente Chat.js */
 .chat-container {
   background-color: #282c34;
@@ -125,6 +126,50 @@
   margin-left: 10px;
 }
 
+/* Añade esto a tu archivo App.css o Chat.css */
+.room-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 20px;
+}
+
+.room-list {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.room-list h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.room-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.room-list li {
+  margin-bottom: 5px;
+}
+
+
+
+.room-list button {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.room-list button:hover {
+  background-color: #45a049;
+}
 
 
 

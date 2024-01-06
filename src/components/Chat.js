@@ -1,35 +1,46 @@
+// src/components/Chat.js
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+import RoomList from './RoomList';
 
 const Chat = () => {
   const location = useLocation();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [rooms, setRooms] = useState([]);
   const [room, setRoom] = useState('');
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState(null);
 
   const firestore = firebase.firestore();
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const roomParam = queryParams.get('room');
-    const userParam = queryParams.get('user');
+    const userId = 'Anónimo';
 
     setRoom(roomParam);
-    setUser(userParam);
+    setUser(userId);
 
     const roomRef = firestore.collection('rooms').doc(roomParam);
 
-    const unsubscribe = roomRef.onSnapshot((snapshot) => {
+    const unsubscribeMessages = roomRef.onSnapshot((snapshot) => {
       if (snapshot.exists) {
         const data = snapshot.data();
         setMessages(data.messages || []);
       }
     });
 
-    return () => unsubscribe();
+    const unsubscribeRooms = firestore.collection('rooms').onSnapshot((snapshot) => {
+      const allRooms = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setRooms(allRooms);
+    });
+
+    return () => {
+      unsubscribeMessages();
+      unsubscribeRooms();
+    };
   }, [location.search, firestore]);
 
   const handleSendMessage = async () => {
@@ -44,6 +55,15 @@ const Chat = () => {
     }
   };
 
+  const handleCreateRoom = async () => {
+    const newRoomName = prompt('Introduce el nombre de la nueva sala:');
+    if (newRoomName) {
+      await firestore.collection('rooms').doc(newRoomName).set({
+        messages: [],
+      });
+    }
+  };
+
   return (
     <div className="chat-container">
       <div className="header">
@@ -54,10 +74,14 @@ const Chat = () => {
           <Link to="/chat?room=sala2">Sala 2</Link>
         </div>
       </div>
+      <div className="room-list-container">
+        <RoomList rooms={rooms} />
+        <button onClick={handleCreateRoom}>Crear Nueva Sala</button>
+      </div>
       <div className="message-container">
         {messages.map((message, index) => (
           <div key={index} className="message">
-            <span className="username">{message.user || 'Anónimo'}:</span> {message.message}
+            {`${message.user || 'Anónimo'}: ${message.message}`}
           </div>
         ))}
       </div>
@@ -75,7 +99,6 @@ const Chat = () => {
 }
 
 export default Chat;
-
 
 
 
