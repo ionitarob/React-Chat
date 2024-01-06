@@ -38,14 +38,26 @@ const Chat = () => {
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '') {
       const roomRef = firestore.collection('rooms').doc(room);
-
+  
+      // Obtén el timestamp actual del servidor
+      const serverTimestamp = firebase.firestore.Timestamp.now();
+  
+      // Crea el objeto del mensaje con el timestamp
+      const newMessageObj = {
+        message: newMessage,
+        user,
+        timestamp: serverTimestamp,
+      };
+  
+      // Agrega el mensaje al array usando arrayUnion
       await roomRef.update({
-        messages: [...messages, { message: newMessage, user }],
+        messages: firebase.firestore.FieldValue.arrayUnion(newMessageObj),
       });
-
+  
       setNewMessage('');
     }
   };
+  
 
   const handleChangeUsername = () => {
     const newUsername = prompt('Ingresa tu nuevo nombre de usuario:');
@@ -88,7 +100,7 @@ const Chat = () => {
         <div className="message-container">
           {messages.map((message, index) => (
             <div key={index} className="message">
-              {`${message.user || 'Anónimo'}: ${message.message}`}
+              {`${message.user || 'Anónimo'} (${new Date(message.timestamp?.seconds * 1000).toLocaleTimeString()}): ${message.message}`}
             </div>
           ))}
         </div>
@@ -108,7 +120,6 @@ const Chat = () => {
 };
 
 export default Chat;
-
 
 
 
